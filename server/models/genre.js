@@ -24,3 +24,4 @@ const validateGenres = (genre) => {
 
 exports.Genres = Model;
 exports.validate = validateGenres;
+exports.genreSchema = schema;
