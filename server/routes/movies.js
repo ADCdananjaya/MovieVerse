@@ -1,7 +1,10 @@
 const express = require("express");
+const util = require("util");
 const router = express.Router();
 const { Movies, validate } = require("../models/movie");
 const upload = require("../utils/fileUpload");
+
+router.use("/posters", express.static("images"));
 
 router.get("/", async (req, res) => {
   try {
@@ -23,10 +26,10 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", upload.single("file"), async (req, res) => {
   try {
     const { error } = validate(req.body);
-    if (err) return res.status(400).send(error.details[0].message);
+    if (error) return res.status(400).send(error.details[0].message);
 
     const movie = await new Movies({
       ...req.body,
@@ -34,6 +37,7 @@ router.post("/", async (req, res) => {
     }).save();
     res.status(201).json(movie);
   } catch (ex) {
+    console.log(ex);
     res.status(400).send("Somthing went wrong!");
   }
 });
@@ -41,7 +45,7 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { error } = validate(req.body);
-    if (err) return res.status(400).send(error.details[0].message);
+    if (error) return res.status(400).send(error.details[0].message);
 
     const movie = await Movies.findByIdAndUpdate(
       req.params.id,
