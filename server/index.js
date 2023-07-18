@@ -7,7 +7,7 @@ const port = process.env.PORT || 3000;
 const genres = require("./routes/genres");
 const customers = require("./routes/customers");
 const movies = require("./routes/movies");
-const upload = require("./utils/fileUpload");
+const users = require("./routes/users");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -16,5 +16,6 @@ app.use(cors());
 app.use("/api/genres", genres);
 app.use("/api/customers", customers);
 app.use("/api/movies", movies);
+app.use("/api/users", users);
 
 app.listen(port, () => console.log(`App listen on port ${port}!`));
