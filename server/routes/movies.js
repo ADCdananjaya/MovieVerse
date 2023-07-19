@@ -3,6 +3,8 @@ const util = require("util");
 const router = express.Router();
 const { Movies, validate } = require("../models/movie");
 const upload = require("../utils/fileUpload");
+const auth = require("../middleware/authorization");
+const admin = require("../middleware/admin");
 
 router.use("/posters", express.static("images"));
 
@@ -26,7 +28,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", upload.single("file"), async (req, res) => {
+router.post("/", [auth, admin], upload.single("file"), async (req, res) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -42,7 +44,7 @@ router.post("/", upload.single("file"), async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", [auth, admin], async (req, res) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -61,7 +63,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", [auth, admin], async (req, res) => {
   try {
     const id = req.params.id;
     const movie = await Movies.findByIdAndDelete(id);

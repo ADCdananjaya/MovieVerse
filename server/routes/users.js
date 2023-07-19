@@ -2,8 +2,9 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const { User, validate } = require("../models/user");
+const auth = require("../middleware/authorization");
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", auth, async (req, res) => {
   try {
     const id = req.params.id;
     const user = await User.findById(id);
@@ -35,7 +36,7 @@ router.post("/", async (req, res) => {
   res.status(201).json({ _id, name, email, date });
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   try {
     const { error } = validate(req.body);
     const id = req.params.id;
