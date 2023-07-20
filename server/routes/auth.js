@@ -13,23 +13,19 @@ const validate = (req) => {
   return schema.validate(req);
 };
 
-router.post("/", async (req, res, next) => {
-  try {
-    const { error } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+router.post("/", async (req, res) => {
+  const { error } = validate(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
 
-    let user = await User.findOne({ email: req.body.email });
-    if (!user) return res.status(400).send("Invalid Email or Password!");
+  let user = await User.findOne({ email: req.body.email });
+  if (!user) return res.status(400).send("Invalid Email or Password!");
 
-    const isValid = await bcrypt.compare(req.body.password, user.password);
-    if (!isValid) return res.status(400).send("Invalid Email or Password!");
+  const isValid = await bcrypt.compare(req.body.password, user.password);
+  if (!isValid) return res.status(400).send("Invalid Email or Password!");
 
-    const token = user.generateAuthToken();
+  const token = user.generateAuthToken();
 
-    res.status(200).send(token);
-  } catch (ex) {
-    next(ex);
-  }
+  res.status(200).send(token);
 });
 
 module.exports = router;
