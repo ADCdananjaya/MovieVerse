@@ -13,7 +13,8 @@ router.get("/", async (req, res) => {
     const movies = await Movies.find();
     res.status(200).json(movies);
   } catch (ex) {
-    res.send(404).send("Movies not found!");
+    console.log(ex.message);
+    res.status(500).send("Something went wrong!");
   }
 });
 
@@ -24,7 +25,8 @@ router.get("/:id", async (req, res) => {
     if (!movie) return res.status(400).send("Movie id is not valid!");
     res.status(200).json(movie);
   } catch (ex) {
-    res.status(400).send("Something went wrong!");
+    console.log(ex.message);
+    res.status(500).send("Something went wrong!");
   }
 });
 
@@ -39,8 +41,8 @@ router.post("/", [auth, admin], upload.single("file"), async (req, res) => {
     }).save();
     res.status(201).json(movie);
   } catch (ex) {
-    console.log(ex);
-    res.status(400).send("Somthing went wrong!");
+    console.log(ex.message);
+    res.status(500).send("Something went wrong!");
   }
 });
 
@@ -59,7 +61,8 @@ router.put("/:id", [auth, admin], async (req, res) => {
 
     res.status(201).json(movie);
   } catch (ex) {
-    res.status(400).send("Somthing went wrong!");
+    console.log(ex.message);
+    res.status(500).send("Something went wrong!");
   }
 });
 
@@ -70,7 +73,8 @@ router.delete("/:id", [auth, admin], async (req, res) => {
     if (!movie) return res.status(404).send("Movie Id is not valid!");
     res.status(200).json(movie);
   } catch (ex) {
-    res.status(400).send("Something went wrong!");
+    console.log(ex.message);
+    res.status(500).send("Something went wrong!");
   }
 });
 

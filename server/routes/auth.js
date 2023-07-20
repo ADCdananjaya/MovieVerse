@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
     res.status(200).send(token);
   } catch (ex) {
     console.log(ex);
-    res.status(400).send("Something went wrong!");
+    res.status(500).send("Something went wrong!");
   }
 });
 

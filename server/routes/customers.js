@@ -8,7 +8,7 @@ router.get("/", async (req, res) => {
     res.status(200).json(customers);
   } catch (ex) {
     console.log(ex.message);
-    res.status(404).send("Customers not found!");
+    res.status(500).send("Something went wrong!");
   }
 });
 
@@ -23,7 +23,7 @@ router.get("/:id", async (req, res) => {
     res.status(200).json(customer);
   } catch (ex) {
     console.log(ex.message);
-    res.status(404).send("Customer with the given ID was not found.");
+    res.status(500).send("Something went wrong!");
   }
 });
 
@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
     res.status(201).json({ name, email, date });
   } catch (ex) {
     console.log(ex.message);
-    res.status(400).send("Something went wrong!");
+    res.status(500).send("Something went wrong!");
   }
 });
 
@@ -58,7 +58,7 @@ router.put("/:id", async (req, res) => {
     res.status(200).json(customer);
   } catch (ex) {
     console.log(ex.message);
-    res.status(400).send("Something went wrong!");
+    res.status(500).send("Something went wrong!");
   }
 });
 
@@ -72,7 +72,7 @@ router.delete("/:id", async (req, res) => {
     res.status(200).json(customer);
   } catch (ex) {
     console.log(ex.message);
-    res.status(400).send("Something went wrong!");
+    res.status(500).send("Something went wrong!");
   }
 });
 

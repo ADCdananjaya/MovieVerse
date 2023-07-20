@@ -12,28 +12,34 @@ router.get("/:id", auth, async (req, res) => {
     const { _id, name, email, date } = user;
     res.status(200).json({ _id, name, email, date });
   } catch (ex) {
-    res.status(400).send("Somthing went wrong!");
+    console.log(ex.message);
+    res.status(500).send("Something went wrong!");
   }
 });
 
 router.post("/", async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  try {
+    const { error } = validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
-  let user = await User.findOne({ email: req.body.email });
-  if (user) return res.status(400).send("User already registered!");
+    let user = await User.findOne({ email: req.body.email });
+    if (user) return res.status(400).send("User already registered!");
 
-  const salt = await bcrypt.genSalt(8);
-  const password = await bcrypt.hash(req.body.password, salt);
+    const salt = await bcrypt.genSalt(8);
+    const password = await bcrypt.hash(req.body.password, salt);
 
-  user = await new User({
-    name: req.body.name,
-    email: req.body.email,
-    password,
-  }).save();
+    user = await new User({
+      name: req.body.name,
+      email: req.body.email,
+      password,
+    }).save();
 
-  const { _id, name, email, date } = user;
-  res.status(201).json({ _id, name, email, date });
+    const { _id, name, email, date } = user;
+    res.status(201).json({ _id, name, email, date });
+  } catch (ex) {
+    console.log(ex.message);
+    res.status(500).send("Something went wrong!");
+  }
 });
 
 router.put("/:id", auth, async (req, res) => {
@@ -58,7 +64,8 @@ router.put("/:id", auth, async (req, res) => {
       return res.status(404).send("User with the given ID was not found.");
     res.status(200).json(user);
   } catch (ex) {
-    res.status(400).send("Something went wrong!");
+    console.log(ex.message);
+    res.status(500).send("Something went wrong!");
   }
 });
 
