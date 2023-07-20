@@ -4,17 +4,16 @@ const { Genres, validate } = require("../models/genre");
 const auth = require("../middleware/authorization");
 const admin = require("../middleware/admin");
 
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
     const genres = await Genres.find();
     res.status(200).json(genres);
   } catch (ex) {
-    console.log(ex.message);
-    res.status(500).send("Something went wrong!");
+    next(ex);
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const genre = await Genres.findById(req.params.id);
     if (!genre)
@@ -22,12 +21,11 @@ router.get("/:id", async (req, res) => {
 
     res.status(200).json(genre);
   } catch (ex) {
-    console.log(ex.message);
-    res.status(500).send("Something went wrong!");
+    next(ex);
   }
 });
 
-router.post("/", [auth, admin], async (req, res) => {
+router.post("/", [auth, admin], async (req, res, next) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -37,12 +35,11 @@ router.post("/", [auth, admin], async (req, res) => {
     const result = await genre.save();
     res.status(201).json(result);
   } catch (ex) {
-    console.log(ex.message);
-    res.status(500).send("Something went wrong!");
+    next(ex);
   }
 });
 
-router.put("/:id", [auth, admin], async (req, res) => {
+router.put("/:id", [auth, admin], async (req, res, next) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -55,20 +52,18 @@ router.put("/:id", [auth, admin], async (req, res) => {
       return res.status(404).send("The genre with the given ID was not found.");
     res.status(200).json(genre);
   } catch (ex) {
-    console.log(ex.message);
-    res.status(500).send("Something went wrong!");
+    next(ex);
   }
 });
 
-router.delete("/:id", [auth, admin], async (req, res) => {
+router.delete("/:id", [auth, admin], async (req, res, next) => {
   try {
     const genre = await Genres.findByIdAndDelete(req.params.id);
     if (!genre)
       return res.status(404).send("The genre with the given ID was not found.");
     res.status(200).json(genre);
   } catch (ex) {
-    console.log(ex.message);
-    res.status(500).send("Something went wrong!");
+    next(ex);
   }
 });
 

@@ -13,7 +13,7 @@ const validate = (req) => {
   return schema.validate(req);
 };
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -28,8 +28,7 @@ router.post("/", async (req, res) => {
 
     res.status(200).send(token);
   } catch (ex) {
-    console.log(ex);
-    res.status(500).send("Something went wrong!");
+    next(ex);
   }
 });
 

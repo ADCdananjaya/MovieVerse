@@ -4,7 +4,7 @@ const router = express.Router();
 const { User, validate } = require("../models/user");
 const auth = require("../middleware/authorization");
 
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", auth, async (req, res, next) => {
   try {
     const id = req.params.id;
     const user = await User.findById(id);
@@ -12,12 +12,11 @@ router.get("/:id", auth, async (req, res) => {
     const { _id, name, email, date } = user;
     res.status(200).json({ _id, name, email, date });
   } catch (ex) {
-    console.log(ex.message);
-    res.status(500).send("Something went wrong!");
+    next(ex);
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   try {
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -37,12 +36,11 @@ router.post("/", async (req, res) => {
     const { _id, name, email, date } = user;
     res.status(201).json({ _id, name, email, date });
   } catch (ex) {
-    console.log(ex.message);
-    res.status(500).send("Something went wrong!");
+    next(ex);
   }
 });
 
-router.put("/:id", auth, async (req, res) => {
+router.put("/:id", auth, async (req, res, next) => {
   try {
     const { error } = validate(req.body);
     const id = req.params.id;
@@ -64,8 +62,7 @@ router.put("/:id", auth, async (req, res) => {
       return res.status(404).send("User with the given ID was not found.");
     res.status(200).json(user);
   } catch (ex) {
-    console.log(ex.message);
-    res.status(500).send("Something went wrong!");
+    next(ex);
   }
 });
 
